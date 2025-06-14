@@ -1,2 +1,2 @@
-# SwiftUIDemos
-SwiftUIDemos
+# Kavsoft SwiftUIDemos
+Kavsoft SwiftUIDemos
