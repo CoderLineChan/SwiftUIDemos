@@ -13,6 +13,7 @@ struct DocumentDetailView: View {
     var document: Document
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     
     @State private var isLoading: Bool = false
     @State private var showFileMover: Bool = false
@@ -62,6 +63,14 @@ struct DocumentDetailView: View {
                 }
                 let context = LAContext()
                 isLockAvailable = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+            }
+            .onChange(of: scenePhase) { oldValue, newValue in
+                if newValue != .active && !document.isLocked {
+                    print("Scene phase changed from \(oldValue) to \(newValue)")
+                    isUnlocked = false
+                }else if newValue == .active && !document.isLocked {
+                    isUnlocked = true
+                }
             }
         }
     }
@@ -113,7 +122,7 @@ struct DocumentDetailView: View {
     
     @ViewBuilder
     private func LockView() -> some View {
-        if document.isLocked {
+        if !isUnlocked {
             ZStack {
                 Rectangle()
                     .fill(.ultraThinMaterial)
